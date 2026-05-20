@@ -1,0 +1,2016 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AcademeForge App</title>
+  <style>
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 START OF SECTION: ROOT VARIABLES & GLOBAL RESET 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+:root {
+  color-scheme: light;
+  --bg: #f6f6f6;
+  --surface: #ffffff;
+  --surface-soft: #fafafa;
+  --text: #0a0a0a;
+  --text-soft: #525252;
+  --text-muted: #7a7a7a;
+  --border: #e5e5e5;
+  --border-strong: #cfcfcf;
+  --black: #000000;
+  --white: #ffffff;
+  --success: #111111;
+  --danger: #111111;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --nav-height: 86px;
+  --transition: 180ms ease;
+}
+body.dark-mode {
+  color-scheme: dark;
+  --bg: #080808;
+  --surface: #111111;
+  --surface-soft: #181818;
+  --text: #f7f7f7;
+  --text-soft: #d4d4d4;
+  --text-muted: #9a9a9a;
+  --border: #262626;
+  --border-strong: #3a3a3a;
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  transition: background var(--transition), color var(--transition);
+}
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+button {
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+img {
+  display: block;
+  max-width: 100%;
+}
+.app {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  min-height: 100vh;
+  margin: 0 auto;
+  background: var(--bg);
+}
+.section {
+  display: none;
+  min-height: 100vh;
+  padding: 20px 18px calc(var(--nav-height) + 70px);
+}
+.section.active {
+  display: block;
+}
+.hidden,
+.af-hidden,
+.hidden-box {
+  display: none !important;
+}
+.panel,
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.panel {
+  padding: 22px;
+}
+.stack {
+  display: grid;
+  gap: 16px;
+}
+.muted {
+  color: var(--text-muted);
+}
+.primary-btn,
+.secondary-btn,
+.icon-btn {
+  min-height: 48px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--text);
+  transition: transform var(--transition), background var(--transition), border-color var(--transition);
+}
+.primary-btn {
+  padding: 0 18px;
+  background: var(--text);
+  color: var(--bg);
+  font-weight: 700;
+}
+.secondary-btn {
+  padding: 0 18px;
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text);
+}
+.icon-btn {
+  width: 52px;
+  background: var(--surface);
+  border-color: var(--border);
+}
+.primary-btn:hover,
+.secondary-btn:hover,
+.icon-btn:hover {
+  transform: translateY(-1px);
+  border-color: var(--text);
+}
+.field {
+  display: grid;
+  gap: 8px;
+}
+.field label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-soft);
+}
+.field input,
+.field textarea,
+.field select {
+  width: 100%;
+  min-height: 52px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-soft);
+  color: var(--text);
+  outline: none;
+  transition: border-color var(--transition), background var(--transition);
+}
+.field textarea {
+  resize: vertical;
+  min-height: 118px;
+}
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+  border-color: var(--text);
+  background: var(--surface);
+}
+.message {
+  display: none;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-soft);
+}
+.message.show {
+  display: block;
+}
+@media (min-width: 768px) {
+  body {
+    background: linear-gradient(90deg, #ececec, var(--bg) 20%, var(--bg) 80%, #ececec);
+  }
+  body.dark-mode {
+    background: linear-gradient(90deg, #030303, var(--bg) 20%, var(--bg) 80%, #030303);
+  }
+  .app {
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+}
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: ROOT VARIABLES & GLOBAL RESET 👈
+                     👉 START OF: SPLASH SCREEN 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+#splashScreen {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 12px;
+  background: var(--surface);
+  transition: opacity 400ms ease, visibility 400ms ease;
+}
+#splashScreen.hide {
+  opacity: 0;
+  visibility: hidden;
+}
+.splash-img {
+  width: 84px;
+  height: 84px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+}
+#splashScreen h1 {
+  font-size: 30px;
+  letter-spacing: -0.02em;
+}
+#splashScreen p {
+  color: var(--text-muted);
+}
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: SPLASH SCREEN 👈
+                     👉 START OF: TOPBAR HEADER 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: blur(18px);
+}
+.top-row,
+.brand,
+.top-actions {
+  display: flex;
+  align-items: center;
+}
+.top-row {
+  justify-content: space-between;
+  gap: 12px;
+}
+.brand {
+  min-width: 0;
+  gap: 12px;
+}
+.app-logo {
+  width: 52px;
+  height: 52px;
+  flex: 0 0 auto;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+.brand h1 {
+  overflow: hidden;
+  font-size: 22px;
+  letter-spacing: -0.03em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.brand p {
+  margin-top: 2px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+.top-actions {
+  gap: 8px;
+}
+.streak-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 58px;
+  height: 52px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  font-weight: 800;
+}
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: TOPBAR HEADER 👈
+                     👉 START OF: HOME SECTION 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+.home-hero {
+  display: grid;
+  gap: 14px;
+}
+.banner-slider {
+  overflow: hidden;
+  padding: 10px;
+  border-radius: var(--radius-lg);
+}
+.banner-slide {
+  display: none;
+}
+.banner-slide.active {
+  display: block;
+}
+.banner-slide img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 18px;
+  background: var(--surface-soft);
+}
+.banner-dots {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  padding: 12px 0 4px;
+}
+.banner-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--border-strong);
+  transition: width var(--transition), background var(--transition);
+}
+.banner-dot.active {
+  width: 24px;
+  background: var(--text);
+}
+.notice-strip {
+  overflow: hidden;
+  padding: 14px 0;
+  border-radius: var(--radius-md);
+}
+.notice-track {
+  display: flex;
+  width: max-content;
+  gap: 42px;
+  color: var(--text-soft);
+  white-space: nowrap;
+  animation: marquee 28s linear infinite;
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.action-grid {
+  display: grid;
+  gap: 14px;
+}
+.action-card {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 14px;
+  align-items: center;
+  width: 100%;
+  padding: 18px;
+  text-align: left;
+  transition: transform var(--transition), border-color var(--transition);
+}
+.action-card:hover {
+  transform: translateY(-1px);
+  border-color: var(--text);
+}
+.action-icon {
+  display: grid;
+  width: 56px;
+  height: 56px;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface-soft);
+  font-size: 23px;
+}
+.action-card h3 {
+  margin-bottom: 4px;
+  font-size: 17px;
+}
+.action-card p {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.45;
+}
+.developer-credit {
+  padding: 8px 0 18px;
+  color: var(--text-muted);
+  text-align: center;
+  font-size: 13px;
+}
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: HOME SECTION 👈
+                     👉 START OF: TEST ARENA SECTION 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+.test-hero,
+.profile-hero,
+.heatmap-hero,
+.request-hero {
+  display: grid;
+  gap: 12px;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+.test-actions,
+.dashboard-stats,
+.heatmap-week,
+.about-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.mini-stat,
+.day-box {
+  min-height: 88px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-soft);
+}
+.mini-stat span,
+.day-box span {
+  display: block;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+.mini-stat strong,
+.day-box strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 22px;
+}
+.test-empty,
+.locked-card,
+.empty-state {
+  display: grid;
+  gap: 10px;
+  place-items: center;
+  padding: 34px 18px;
+  text-align: center;
+}
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: TEST ARENA SECTION 👈
+                     👉 START OF: STUDENT AUTH SECTION 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+.student-card {
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+}
+.student-title {
+  font-size: 32px;
+  line-height: 1.06;
+  letter-spacing: -0.04em;
+}
+.student-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.student-tab {
+  min-height: 48px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-soft);
+  color: var(--text-soft);
+}
+.student-tab.active {
+  border-color: var(--text);
+  background: var(--text);
+  color: var(--bg);
+}
+.student-box {
+  display: grid;
+  gap: 14px;
+}
+.course-grid,
+.batch-grid,
+.post-list,
+.request-list {
+  display: grid;
+  gap: 14px;
+}
+.course-card,
+.batch-card,
+.post-card,
+.request-card {
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: STUDENT AUTH SECTION 👈
+                     👉 START OF: PROFILE DASHBOARD SECTION 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+.profile-avatar {
+  display: grid;
+  width: 72px;
+  height: 72px;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: var(--surface-soft);
+  font-size: 30px;
+  font-weight: 900;
+}
+.detail-grid {
+  display: grid;
+  gap: 10px;
+}
+.detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 52px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-soft);
+}
+.detail-row span {
+  color: var(--text-muted);
+}
+.detail-row strong {
+  text-align: right;
+}
+.accordion-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 58px;
+  padding: 0 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-soft);
+  text-align: left;
+}
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: PROFILE DASHBOARD SECTION 👈
+                     👉 START OF: BATCHES SECTION 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+.batch-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 56px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+.batch-search input {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  outline: none;
+}
+.batch-card img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 16px;
+  background: var(--surface-soft);
+}
+.batch-body {
+  display: grid;
+  gap: 10px;
+  padding-top: 14px;
+}
+.price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.price-row strong {
+  font-size: 26px;
+}
+.price-row del,
+.price-row span {
+  color: var(--text-muted);
+}
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: BATCHES SECTION 👈
+                     👉 START OF: COMMUNITY SECTION 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+.community-header,
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.filter-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.filter-btn.active {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+.post-card {
+  display: grid;
+  gap: 12px;
+}
+.post-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.post-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.avatar-sm {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-soft);
+  font-weight: 800;
+}
+.floating-write {
+  position: fixed;
+  right: max(22px, calc((100vw - 520px) / 2 + 22px));
+  bottom: calc(var(--nav-height) + 28px);
+  z-index: 180;
+  width: 58px;
+  height: 58px;
+  border: 1px solid var(--text);
+  border-radius: 20px;
+  background: var(--text);
+  color: var(--bg);
+  font-size: 22px;
+}
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: COMMUNITY SECTION 👈
+                     👉 START OF: SETTINGS AND SUPPORT SECTIONS 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 60px;
+  padding: 0 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  text-align: left;
+}
+.settings-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.settings-icon {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-soft);
+}
+.switch {
+  position: relative;
+  width: 48px;
+  height: 28px;
+}
+.switch input {
+  opacity: 0;
+}
+.slider {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-soft);
+}
+.slider::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--text);
+  transition: transform var(--transition);
+}
+.switch input:checked + .slider::after {
+  transform: translateX(20px);
+}
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: SETTINGS AND SUPPORT SECTIONS 👈
+                     👉 START OF: ABOUT AND HEATMAP SECTIONS 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+.about-hero h2 {
+  margin: 14px 0;
+  font-size: 44px;
+  line-height: 0.98;
+  letter-spacing: -0.06em;
+}
+.feature-grid {
+  display: grid;
+  gap: 14px;
+}
+.feature-card {
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+.feature-card h3 {
+  margin: 8px 0;
+}
+.day-box.active {
+  border-color: var(--text);
+  background: var(--text);
+  color: var(--bg);
+}
+.day-box.today {
+  outline: 2px solid var(--border-strong);
+}
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: ABOUT AND HEATMAP SECTIONS 👈
+                     👉 START OF: BOTTOM NAVIGATION 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+.bottom-nav {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  z-index: 190;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: calc(100% - 24px);
+  max-width: 490px;
+  height: var(--nav-height);
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  backdrop-filter: blur(20px);
+  transform: translateX(-50%);
+}
+.nav-btn {
+  display: grid;
+  flex: 1;
+  height: 68px;
+  place-items: center;
+  gap: 3px;
+  border-radius: 20px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+.nav-btn b {
+  font-size: 20px;
+}
+.nav-btn.active {
+  border: 1px solid var(--border);
+  background: var(--surface-soft);
+  color: var(--text);
+}
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: BOTTOM NAVIGATION 👈
+                     👉 START OF: SLIDE-UP FORMS AND TOASTS 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+@keyframes slideUpForm {
+  from {
+    opacity: 0;
+    transform: translateY(80px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(10px);
+}
+.modal-overlay.show {
+  display: flex;
+}
+.modal-card {
+  width: 100%;
+  max-width: 520px;
+  max-height: 92vh;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 28px 28px 20px 20px;
+  background: var(--surface);
+  animation: slideUpForm 360ms cubic-bezier(.22, .9, .24, 1);
+}
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.modal-form {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+}
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--nav-height) + 22px);
+  z-index: 1200;
+  display: none;
+  width: calc(100% - 36px);
+  max-width: 460px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  transform: translateX(-50%);
+}
+.toast.show {
+  display: block;
+}
+@media (max-width: 420px) {
+  .brand h1 { font-size: 19px; }
+  .student-title,
+  .about-hero h2 { font-size: 34px; }
+  .test-actions,
+  .dashboard-stats,
+  .heatmap-week,
+  .about-stats { grid-template-columns: 1fr; }
+}
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: SLIDE-UP FORMS AND TOASTS 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+  </style>
+</head>
+<body>
+<!--
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: HTML HEAD 👈
+                     👉 START OF: SPLASH SCREEN 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+-->
+<div id="splashScreen" aria-hidden="true">
+  <img src="AF LOGO 1.jpeg" class="splash-img" alt="AcademeForge Logo" />
+  <h1>AcademeForge</h1>
+  <p>Learning Beyond The Classroom</p>
+</div>
+<!--
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: SPLASH SCREEN 👈
+                     👉 START OF: MAIN APP WRAPPER 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+-->
+<main class="app">
+<!--
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: MAIN APP WRAPPER 👈
+                     👉 START OF: TOPBAR HEADER 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+-->
+  <header class="topbar">
+    <div class="top-row">
+      <div class="brand">
+        <img src="AF LOGO 1.jpeg" class="app-logo" alt="AcademeForge Logo" />
+        <div>
+          <h1>AcademeForge</h1>
+          <p>Learning Beyond the Classroom</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button type="button" class="streak-pill" onclick="showSection('learningHeatmap')" aria-label="Open learning streak">
+          <span aria-hidden="true">🔥</span>
+          <span id="afHeaderStreakCount">0</span>
+        </button>
+        <button type="button" class="icon-btn" onclick="showSection('notifications')" aria-label="Open notifications">🔔</button>
+      </div>
+    </div>
+  </header>
+<!--
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: TOPBAR HEADER 👈
+                     👉 START OF: HOME SECTION 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+-->
+  <section id="home" class="section active" aria-label="Home">
+    <div class="home-hero">
+      <div class="banner-slider card" id="homeBanner">
+        <div class="banner-slide active"><img src="banner1.png" alt="AcademeForge Banner 1" /></div>
+        <div class="banner-slide"><img src="banner2.png" alt="AcademeForge Banner 2" /></div>
+        <div class="banner-slide"><img src="Banner3.png" alt="AcademeForge Banner 3" /></div>
+        <div class="banner-dots" aria-label="Banner controls">
+          <button class="banner-dot active" type="button" onclick="goToBannerSlide(0)" aria-label="Banner 1"></button>
+          <button class="banner-dot" type="button" onclick="goToBannerSlide(1)" aria-label="Banner 2"></button>
+          <button class="banner-dot" type="button" onclick="goToBannerSlide(2)" aria-label="Banner 3"></button>
+        </div>
+      </div>
+      <div class="notice-strip card">
+        <div class="notice-track" id="noticeTrack">
+          <span>Beta version. AF Nexus content is being updated.</span>
+          <span>Beta version. AF Nexus content is being updated.</span>
+          <span>Beta version. AF Nexus content is being updated.</span>
+          <span>Beta version. AF Nexus content is being updated.</span>
+        </div>
+      </div>
+      <div class="action-grid">
+        <button class="action-card card" type="button" onclick="showSection('studentaf')">
+          <span class="action-icon">🎓</span>
+          <span><h3>Student Login</h3><p>Access your course dashboard.</p></span>
+        </button>
+        <button class="action-card card" type="button" onclick="openStudentDashboardCardAf(event)">
+          <span class="action-icon">👤</span>
+          <span><h3 id="studentDashboardCardNameAf">Hi, Student</h3><p id="studentDashboardCardSubAf">Login to view profile</p></span>
+        </button>
+        <button class="action-card card" type="button" onclick="showSection('explore')">
+          <span class="action-icon">✨</span>
+          <span><h3>AF Test Arena</h3><p>Attempt quizzes and see your ranking.</p></span>
+        </button>
+        <button class="action-card card" type="button" onclick="showSection('management')">
+          <span class="action-icon">ⓘ</span>
+          <span><h3>About Us</h3><p>Know the story behind AcademeForge.</p></span>
+        </button>
+      </div>
+      <div class="developer-credit">
+        <span>Developed by Devraj Kumar</span><br />
+        <small>Made with love in India.</small>
+      </div>
+    </div>
+  </section>
+<!--
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: HOME SECTION 👈
+                     👉 START OF: TEST ARENA SECTION 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+-->
+  <section id="explore" class="section" aria-label="AF Test Arena">
+    <div class="stack">
+      <button class="secondary-btn" type="button" onclick="showSection('home')">← Back</button>
+      <div id="afTestLockedV1" class="panel locked-card">
+        <h2>AcademeForge Scholars Tests</h2>
+        <p class="muted">Login to know about upcoming tests.</p>
+        <button class="primary-btn" type="button" onclick="showSection('studentaf')">Login Now</button>
+      </div>
+      <div id="afTestMainV1" class="stack hidden">
+        <div class="test-hero">
+          <span class="muted">AF Nexus</span>
+          <h2>AcademeForge Scholars Test</h2>
+          <p class="muted">Stay updated with upcoming tests, assessments, and student opportunities.</p>
+        </div>
+        <div class="test-actions">
+          <button class="secondary-btn" type="button" onclick="openAFTestDashboardPageV1()">Dashboard</button>
+          <button class="secondary-btn" type="button" onclick="openAFTestRankingPageV1()">Rankings</button>
+          <button class="secondary-btn" type="button" onclick="loadAFTestPageV1()">Refresh</button>
+        </div>
+        <div class="dashboard-stats" id="afTestDashboardCardsV1"></div>
+        <div id="afTestAreaV1" class="panel test-empty"></div>
+        <div id="afTestDashboardPageV1" class="panel hidden"></div>
+        <div id="afTestRankingPageV1" class="panel hidden"></div>
+      </div>
+    </div>
+  </section>
+<!--
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: TEST ARENA SECTION 👈
+                     👉 START OF: STUDENT AUTH SECTION 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+-->
+  <section id="studentaf" class="section" aria-label="Student Access">
+    <div class="stack">
+      <div id="studentAuthCardaf" class="student-card card">
+        <div class="action-icon">🎓</div>
+        <div>
+          <h2 class="student-title">Student ID Access</h2>
+          <p class="muted">Login with your verified Student ID to access courses, batches, and community features.</p>
+        </div>
+        <div class="student-tabs">
+          <button id="loginTabBtnaf" class="student-tab active" type="button" onclick="switchStudentModeaf('login')">Login</button>
+          <button id="createTabBtnaf" class="student-tab" type="button" onclick="switchStudentModeaf('create')">Create ID</button>
+        </div>
+        <div id="studentLoginBoxaf" class="student-box">
+          <div class="field"><label for="loginPhoneaf">Student ID / Phone Number</label><input id="loginPhoneaf" type="tel" placeholder="Enter your phone number" /></div>
+          <div class="field"><label for="loginPasswordaf">Password</label><input id="loginPasswordaf" type="password" placeholder="Enter password" /></div>
+          <button class="primary-btn" type="button" onclick="loginStudentaf()">Login</button>
+          <button class="secondary-btn" type="button" onclick="switchStudentModeaf('forgot')">Forgot Password?</button>
+        </div>
+        <div id="studentCreateBoxaf" class="student-box hidden">
+          <div class="field"><label for="createNameaf">Full Name</label><input id="createNameaf" type="text" placeholder="Enter your full name" /></div>
+          <div class="field"><label for="createPhoneaf">Phone Number</label><input id="createPhoneaf" type="tel" placeholder="Enter phone number" /></div>
+          <div class="field"><label for="createEmailaf">Email Address</label><input id="createEmailaf" type="email" placeholder="Enter email address" /></div>
+          <div class="field"><label for="createPasswordaf">Create Password</label><input id="createPasswordaf" type="password" placeholder="Create password" /></div>
+          <button class="primary-btn" type="button" onclick="sendCreateOtpaf()">Create ID</button>
+        </div>
+        <div id="studentForgotBoxaf" class="student-box hidden">
+          <div class="field"><label for="forgotLoginaf">Student ID / Phone / Email</label><input id="forgotLoginaf" type="text" placeholder="Enter your Student ID, phone, or email" /></div>
+          <button class="primary-btn" type="button" onclick="findStudentForResetaf()">Send Reset Link</button>
+          <button class="secondary-btn" type="button" onclick="switchStudentModeaf('login')">Back to Login</button>
+        </div>
+        <div id="studentMessageaf" class="message" aria-live="polite"></div>
+      </div>
+      <div id="courseSelectBox" class="panel hidden">
+        <div class="section-head">
+          <div><h2>My Courses</h2><p id="studentWelcomeTextaf" class="muted">Welcome Student</p></div>
+          <button class="secondary-btn" type="button" onclick="logoutStudentafWithMessage()">Logout</button>
+        </div>
+        <div id="courseCardsaf" class="course-grid" style="margin-top:16px"></div>
+      </div>
+      <div id="noCourseBoxaf" class="panel hidden empty-state">
+        <h2>Oops!</h2>
+        <p class="muted">You are not enrolled in any batch.</p>
+        <button class="primary-btn" type="button" onclick="showSection('batchaf')">Explore Batches</button>
+      </div>
+    </div>
+  </section>
+<!--
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: STUDENT AUTH SECTION 👈
+                     👉 START OF: PROFILE DASHBOARD SECTION 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+-->
+  <section id="studentDashboardAf" class="section" aria-label="Student Dashboard">
+    <div class="stack">
+      <div class="profile-hero">
+        <button class="secondary-btn" type="button" onclick="showSection('home')">← Back</button>
+        <div class="profile-avatar" id="afProfileAvatar">S</div>
+        <div><h2 id="afProfileHeroName">Student</h2><p id="afProfileHeroSub" class="muted">View and manage your dashboard</p></div>
+      </div>
+      <div class="panel stack">
+        <div class="section-head"><div><h3>Your Details</h3><p class="muted">Name, email and phone number</p></div></div>
+        <div class="detail-grid">
+          <div class="detail-row"><span>Name</span><strong id="afInfoName">-</strong></div>
+          <div class="detail-row"><span>Email</span><strong id="afInfoEmail">-</strong></div>
+          <div class="detail-row"><span>Phone</span><strong id="afInfoMobile">-</strong></div>
+        </div>
+      </div>
+      <div class="panel stack">
+        <h3>Batch Enrolled In</h3>
+        <div id="afBatchList" class="course-grid"><p class="muted">No enrolled batch found.</p></div>
+      </div>
+      <div class="panel stack">
+        <button id="afExtraSettingsToggleV2" class="accordion-toggle" type="button" onclick="toggleAfExtraSettingsV2()" aria-expanded="false">
+          <span><strong>Additional Setting</strong><br /><small class="muted">Account safety and sensitive actions</small></span>
+          <span id="afExtraSettingsArrowV2">⌄</span>
+        </button>
+        <div id="afExtraSettingsBodyV2" class="hidden">
+          <button id="afDeleteAccountOpenBtnV2" class="secondary-btn" type="button" onclick="openAfDeleteAccountRequestV2()">Delete Account</button>
+        </div>
+      </div>
+    </div>
+  </section>
+<!--
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: PROFILE DASHBOARD SECTION 👈
+                     👉 START OF: BATCHES SECTION 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+-->
+  <section id="batchaf" class="section" aria-label="Batches">
+    <div class="stack">
+      <div class="section-head">
+        <div><h2>All Batches</h2><p id="batchCountTextaf" class="muted">5 batches available</p></div>
+      </div>
+      <div class="batch-search"><span>⌕</span><input id="batchSearchInputaf" type="text" placeholder="Search for batches" oninput="filterBatchesaf()" /></div>
+      <div id="batchCardsaf" class="batch-grid"></div>
+    </div>
+  </section>
+<!--
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: BATCHES SECTION 👈
+                     👉 START OF: COMMUNITY SECTION 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+-->
+  <section id="community" class="section" aria-label="Community">
+    <div class="stack">
+      <div id="afNexusLockedV2" class="panel locked-card hidden">
+        <h2>Community Locked</h2>
+        <p class="muted">Login to access Community and interact with fellow learners.</p>
+        <button class="primary-btn" type="button" onclick="showSection('studentaf')">Login to Continue</button>
+      </div>
+      <div id="afNexusMainV2" class="stack">
+        <div class="community-header">
+          <div><h2>AF Nexus</h2><p class="muted">Connect, discuss and grow with fellow learners.</p></div>
+          <button class="secondary-btn" type="button" onclick="openAfMyNexusV2()">My Posts</button>
+        </div>
+        <div class="panel"><span class="muted">Posting as</span><br /><strong id="afNexusStudentNameV2">Student</strong></div>
+        <div class="filter-row">
+          <button id="afNexusRelevantBtnV2" class="secondary-btn filter-btn active" type="button" onclick="setAfNexusFeedModeV2('relevant')">Most Relevant</button>
+          <button id="afNexusRecentBtnV2" class="secondary-btn filter-btn" type="button" onclick="setAfNexusFeedModeV2('recent')">Recent Post</button>
+        </div>
+        <div id="afNexusFeedViewV2" class="stack">
+          <div class="section-head"><h3>Community Posts</h3><button class="secondary-btn" type="button" onclick="loadAfNexusPostsV2()">Refresh</button></div>
+          <div id="afNexusPostsListV2" class="post-list"></div>
+        </div>
+        <div id="afMyNexusViewV2" class="stack hidden">
+          <div class="section-head"><h3>My Nexus</h3><button class="secondary-btn" type="button" onclick="closeAfMyNexusV2()">Back</button></div>
+          <div id="afMyNexusPostsListV2" class="post-list"></div>
+        </div>
+      </div>
+      <button id="afNexusWriteBtnV2" class="floating-write" type="button" onclick="openAfNexusComposerV2()" aria-label="Write post">✎</button>
+    </div>
+  </section>
+<!--
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: COMMUNITY SECTION 👈
+                     👉 START OF: NOTIFICATIONS SECTION 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+-->
+  <section id="notifications" class="section" aria-label="Notifications">
+    <div class="panel stack">
+      <button class="secondary-btn" type="button" onclick="showSection('home')">← Back</button>
+      <h2>Notifications</h2>
+      <p class="muted">Latest lectures, batch updates, notes, and important announcements.</p>
+      <div id="notificationsList" class="empty-state"><p class="muted">No notifications yet.</p></div>
+    </div>
+  </section>
+<!--
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: NOTIFICATIONS SECTION 👈
+                     👉 START OF: ABOUT SECTION 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+-->
+  <section id="management" class="section" aria-label="About Us">
+    <div class="stack">
+      <button class="secondary-btn" type="button" onclick="showSection('home')">← Back</button>
+      <div class="panel about-hero">
+        <span class="muted">About AcademeForge</span>
+        <h2>Learning Beyond the Classroom</h2>
+        <p class="muted">AcademeForge is a modern learning space where students can access courses, batches, updates, community, and study tools in one simple app.</p>
+        <div class="about-stats">
+          <div class="mini-stat"><span>Practical</span><strong>Learning</strong></div>
+          <div class="mini-stat"><span>Student</span><strong>Focused</strong></div>
+          <div class="mini-stat"><span>Mobile</span><strong>First</strong></div>
+        </div>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card"><h3>Mission</h3><p class="muted">To make practical learning simple, organized, and accessible for students.</p></div>
+        <div class="feature-card"><h3>Vision</h3><p class="muted">To build a smart learning ecosystem where students can grow with confidence.</p></div>
+        <div class="feature-card"><h3>Founder</h3><p class="muted">AcademeForge and the app experience are credited to Founder Devraj Kumar.</p></div>
+      </div>
+    </div>
+  </section>
+<!--
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: ABOUT SECTION 👈
+                     👉 START OF: SETTINGS SECTION 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+-->
+  <section id="settings" class="section" aria-label="Settings">
+    <div class="stack">
+      <div class="panel section-head">
+        <div><h2 id="settingsStudentName">Hi, Student</h2><button class="secondary-btn" type="button" onclick="openStudentDashboardFromSettingsAf()">View profile</button></div>
+      </div>
+      <a class="settings-row" href="https://academeforge.github.io/SUPER/official/" target="_blank" rel="noopener"><span class="settings-left"><span class="settings-icon">⌁</span><span>Official Website</span></span><span>›</span></a>
+      <div class="stack">
+        <div class="settings-row"><span class="settings-left"><span class="settings-icon">◐</span><span>Night Mode</span></span><label class="switch"><input id="settingsDarkToggle" type="checkbox" onchange="toggleSettingsDarkMode(this.checked)" /><span class="slider"></span></label></div>
+        <button class="settings-row" type="button" onclick="showSection('explore')"><span class="settings-left"><span class="settings-icon">🎓</span><span>AF Test Arena</span></span><span>›</span></button>
+        <button class="settings-row" type="button" onclick="showSection('studentaf')"><span class="settings-left"><span class="settings-icon">□</span><span>Login/Create ID</span></span><span>›</span></button>
+        <button class="settings-row" type="button" onclick="openBugReportModal()"><span class="settings-left"><span class="settings-icon">!</span><span>Report a Bug</span></span><span>›</span></button>
+        <button class="settings-row" type="button" onclick="openRequestStatusPageAf()"><span class="settings-left"><span class="settings-icon">✓</span><span>Request Status</span></span><span>›</span></button>
+        <button class="settings-row" type="button" onclick="showSection('learningHeatmap')"><span class="settings-left"><span class="settings-icon">🔥</span><span>Learning Heatmap</span></span><span>›</span></button>
+        <button class="settings-row" type="button" onclick="openContactUsPage()"><span class="settings-left"><span class="settings-icon">☎</span><span>Contact Us</span></span><span>›</span></button>
+        <button class="settings-row" type="button" onclick="showSection('management')"><span class="settings-left"><span class="settings-icon">ⓘ</span><span>About Us</span></span><span>›</span></button>
+        <button class="settings-row" type="button" onclick="logoutStudentafWithMessage()"><span class="settings-left"><span class="settings-icon">↩</span><span>Logout</span></span></button>
+      </div>
+      <div class="developer-credit"><strong>App Version: 09.01.2024</strong><br /><span>Made with love in India</span></div>
+    </div>
+  </section>
+<!--
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: SETTINGS SECTION 👈
+                     👉 START OF: REQUEST STATUS SECTION 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+-->
+  <section id="requestStatusAf" class="section" aria-label="Request Status">
+    <div class="stack">
+      <div class="request-hero">
+        <button class="secondary-btn" type="button" onclick="showSection('settings')">← Back</button>
+        <div><p class="muted">Support Center</p><h2>Request Status</h2><span class="muted">Track your bug reports and support requests.</span></div>
+        <button class="secondary-btn" type="button" onclick="loadRequestStatusAf(true)">Refresh</button>
+      </div>
+      <div id="requestStatusMessageAf" class="message show">Loading your requests...</div>
+      <div id="requestStatusListAf" class="request-list"></div>
+    </div>
+  </section>
+<!--
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: REQUEST STATUS SECTION 👈
+                     👉 START OF: CONTACT US SECTION 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+-->
+  <section id="contactUsAf" class="section" aria-label="Contact Us">
+    <div class="stack">
+      <button class="secondary-btn" type="button" onclick="showSection('settings')">← Back to Settings</button>
+      <div class="panel stack">
+        <div><p class="muted">Support Request</p><h2>Request a Call or Email Reply</h2><p class="muted">Share your details and our team will contact you regarding your query.</p></div>
+        <form id="contactUsFormAf" class="stack" onsubmit="submitContactRequestAf(event)">
+          <div class="field"><label for="contactNameAf">Full Name</label><input id="contactNameAf" name="name" type="text" maxlength="80" required /></div>
+          <div class="field"><label for="contactMobileAf">Mobile Number</label><input id="contactMobileAf" name="mobile" type="tel" maxlength="15" required /></div>
+          <div class="field"><label for="contactEmailAf">Email Address</label><input id="contactEmailAf" name="email" type="email" maxlength="120" required /></div>
+          <div class="field"><label for="contactReasonAf">Reason for Contact</label><select id="contactReasonAf" name="reason" required><option value="">Select a reason</option><option>Course Access Issue</option><option>Login or Student ID Issue</option><option>Payment or Enrollment Query</option><option>Technical Problem</option><option>General Support</option></select></div>
+          <div class="field"><label for="contactProblemAf">Describe Your Problem</label><textarea id="contactProblemAf" name="problem" maxlength="1200" required></textarea></div>
+          <div id="contactUsMessageAf" class="message" aria-live="polite"></div>
+          <button id="contactSubmitBtnAf" class="primary-btn" type="submit">Submit Request</button>
+        </form>
+      </div>
+    </div>
+  </section>
+<!--
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: CONTACT US SECTION 👈
+                     👉 START OF: LEARNING HEATMAP SECTION 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+-->
+  <section id="learningHeatmap" class="section" aria-label="Learning Heatmap">
+    <div class="stack">
+      <button class="secondary-btn" type="button" onclick="showSection('settings')">← Back to Settings</button>
+      <div class="heatmap-hero">
+        <p class="muted">Weekly Online Activity</p>
+        <h2>Learning Heatmap</h2>
+        <p class="muted">Login daily and stay active to maintain your learning streak.</p>
+        <div class="mini-stat"><span>Day Streak</span><strong id="learningHeatmapStreakCount">0</strong></div>
+      </div>
+      <div class="panel stack">
+        <div class="section-head"><div><h3>This Week</h3><p id="learningHeatmapStatus" class="muted">Checking activity...</p></div><button class="secondary-btn" type="button" onclick="loadLearningHeatmap()">Refresh</button></div>
+        <div id="learningWeekGrid" class="heatmap-week"></div>
+      </div>
+      <div class="panel"><h3>How streak works</h3><p class="muted">Use the app daily to mark your learning activity and maintain your streak.</p></div>
+    </div>
+  </section>
+<!--
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: LEARNING HEATMAP SECTION 👈
+                     👉 START OF: BOTTOM NAVIGATION SECTION 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+-->
+  <nav class="bottom-nav" aria-label="Primary navigation">
+    <button class="nav-btn active" data-section="home" type="button" onclick="showSection('home')"><b>⌂</b><span>Home</span></button>
+    <button class="nav-btn" data-section="studentaf" type="button" onclick="showSection('studentaf')"><b>🎓</b><span>Student</span></button>
+    <button class="nav-btn" data-section="batchaf" type="button" onclick="showSection('batchaf')"><b>□</b><span>Batches</span></button>
+    <button class="nav-btn" data-section="community" type="button" onclick="showSection('community')"><b>◇</b><span>Community</span></button>
+    <button class="nav-btn" data-section="settings" type="button" onclick="showSection('settings')"><b>⚙</b><span>Settings</span></button>
+  </nav>
+</main>
+<!--
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: BOTTOM NAVIGATION SECTION 👈
+                     👉 START OF: SLIDE-UP FORM MODALS 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+-->
+<div id="bugReportOverlay" class="modal-overlay" aria-hidden="true" onclick="closeBugReportModal()">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="bugReportTitle" onclick="event.stopPropagation()">
+    <div class="modal-head"><div><p class="muted">AcademeForge Support</p><h3 id="bugReportTitle">Report a Bug</h3></div><button type="button" onclick="closeBugReportModal()" aria-label="Close">×</button></div>
+    <form id="bugReportForm" class="modal-form" onsubmit="submitBugReport(event)">
+      <div class="field"><label for="bugReporterName">Your Name</label><input id="bugReporterName" type="text" maxlength="80" required /></div>
+      <div class="field"><label for="bugReporterEmail">Contact Email</label><input id="bugReporterEmail" type="email" maxlength="120" required /></div>
+      <div class="field"><label for="bugCategory">Bug Category</label><select id="bugCategory" required><option value="">Select issue type</option><option value="login">Login / Student ID</option><option value="navigation">Navigation</option><option value="dark_mode">Dark / Reading Mode</option><option value="notification">Notifications</option><option value="payment">Payment / Purchase</option><option value="ui">UI / Design</option><option value="performance">Slow / Lagging</option><option value="other">Other</option></select></div>
+      <div class="field"><label for="bugPriority">Priority</label><select id="bugPriority" required><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option><option value="critical">Critical</option></select></div>
+      <div class="field"><label for="bugDescription">What happened?</label><textarea id="bugDescription" maxlength="1200" required></textarea></div>
+      <div id="bugReportStatus" class="message" aria-live="polite"></div>
+      <button id="bugReportSubmitBtn" class="primary-btn" type="submit">Submit Report</button>
+    </form>
+  </div>
+</div>
+<div id="afNexusComposerOverlayV2" class="modal-overlay" aria-hidden="true">
+  <div class="modal-card" role="dialog" aria-modal="true">
+    <div class="modal-head"><div><h3>Create Post</h3><p class="muted">Text-only post. Maximum 80 words.</p></div><button type="button" onclick="closeAfNexusComposerV2()">×</button></div>
+    <div class="modal-form">
+      <div class="field"><label for="afNexusPostInputV2">Post</label><textarea id="afNexusPostInputV2" rows="7" oninput="handleAfNexusPostTypingV2()"></textarea></div>
+      <div class="section-head"><span id="afNexusWordCountV2" class="muted">0 / 80 words</span><button id="afNexusSubmitPostBtnV2" class="primary-btn" type="button" onclick="createAfNexusPostV2()">Post</button></div>
+      <p id="afNexusWordLimitWarningV2" class="message">Word limit exceeded.</p>
+    </div>
+  </div>
+</div>
+<div id="afDeleteAccountModalV2" class="modal-overlay" aria-hidden="true" onclick="closeAfDeleteAccountRequestV2()">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="afDeleteModalTitleV2" onclick="event.stopPropagation()">
+    <div class="modal-head"><div><h3 id="afDeleteModalTitleV2">Account Deletion Request</h3><p class="muted">Secure verification required</p></div><button type="button" onclick="closeAfDeleteAccountRequestV2()">×</button></div>
+    <form id="afDeleteAccountFormV2" class="modal-form" onsubmit="submitAfDeleteAccountRequestV2(event)">
+      <div class="panel"><strong>Important account deletion policy</strong><p class="muted">Your request will be reviewed. If approved, your account will be scheduled for deletion after 90 days.</p></div>
+      <div class="field"><label for="afDeleteFullNameV2">Full Name</label><input id="afDeleteFullNameV2" name="full_name" type="text" maxlength="90" required /></div>
+      <div class="field"><label for="afDeleteEmailV2">Registered Email</label><input id="afDeleteEmailV2" name="registered_email" type="email" maxlength="140" required /></div>
+      <div class="field"><label for="afDeletePhoneV2">Registered Phone Number</label><input id="afDeletePhoneV2" name="registered_phone" type="tel" maxlength="18" required /></div>
+      <div class="field"><label for="afDeleteReasonV2">Reason</label><select id="afDeleteReasonV2" name="delete_reason" required><option value="">Select a reason</option><option>No longer using the platform</option><option>Created another account</option><option>Privacy or data concern</option><option>Course or access issue</option><option>Technical issue</option><option>Other reason</option></select></div>
+      <div class="field"><label for="afDeleteDetailsV2">Additional Details</label><textarea id="afDeleteDetailsV2" name="additional_details" maxlength="1200" required></textarea></div>
+      <label><input id="afDeleteConfirmV2" type="checkbox" required /> I understand the 90-day deletion policy.</label>
+      <div id="afDeleteMessageV2" class="message" aria-live="polite"></div>
+      <button id="afDeleteSubmitBtnV2" class="primary-btn" type="submit">Submit Deletion Request</button>
+      <button class="secondary-btn" type="button" onclick="closeAfDeleteAccountRequestV2()">Cancel</button>
+    </form>
+  </div>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"><strong>Notification</strong><p>Message</p></div>
+<!--
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: SLIDE-UP FORM MODALS 👈
+                     👉 START OF: APPLICATION JAVASCRIPT 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+-->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 START OF SECTION: CONFIGURATION AND HELPERS 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+const SUPABASE_URL = "https://nltmolhlwgsrxadknzzq.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5sdG1vbGhsd2dzcnhhZGtuenpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2MDMyMzksImV4cCI6MjA5NDE3OTIzOX0.HEvMlpp6XFbD9MuQhxFwsNpfvzfev3ISkJbA93SvMXc";
+const STUDENT_SUPABASE_URL = "https://afooyyydhlwngzssgqih.supabase.co";
+const STUDENT_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhZm9veXl5ZGhsd25nenNzZ3FpaCIsInJlZiI6ImFmb295eXlkaGx3bmd6c3NncWloIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2NDQxMjgsImV4cCI6MjA5NDIyMDEyOH0.KG0XO0oP_2MpewHoIwTtbrKg5FkyOYRUtVzLH1MSJiE";
+const RAZORPAY_KEY_ID = "rzp_test_SpO0DdKfoz5wRu";
+const db = window.supabase ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+const studentDb = window.supabase ? supabase.createClient(STUDENT_SUPABASE_URL, STUDENT_SUPABASE_ANON_KEY) : null;
+const $ = (id) => document.getElementById(id);
+const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+const clean = (value) => String(value || "").trim();
+const escapeHtml = (value) => clean(value).replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[char]));
+function showToast(title, message) {
+  const toast = $("toast");
+  if (!toast) return;
+  const strong = toast.querySelector("strong");
+  const p = toast.querySelector("p");
+  if (strong) strong.textContent = title || "Notification";
+  if (p) p.textContent = message || "";
+  toast.classList.add("show");
+  clearTimeout(window.__afToastTimer);
+  window.__afToastTimer = setTimeout(() => toast.classList.remove("show"), 2400);
+}
+function setMessage(id, type, text) {
+  const box = $(id);
+  if (!box) return;
+  box.textContent = text || "";
+  box.className = "message" + (text ? " show" : "");
+  box.dataset.type = type || "";
+}
+function getStudent() {
+  return {
+    id: localStorage.getItem("af_student_uuid") || "",
+    student_id: localStorage.getItem("af_student_id") || "",
+    name: localStorage.getItem("af_student_name") || "Student",
+    email: localStorage.getItem("af_student_email") || "",
+    mobile: localStorage.getItem("af_student_mobile") || ""
+  };
+}
+function isLoggedIn() {
+  const s = getStudent();
+  return localStorage.getItem("af_student_logged_in") === "true" && !!(s.email || s.mobile || s.student_id);
+}
+async function edgeCall(functionName, payload) {
+  if (!studentDb) return { ok: false, message: "Backend not connected." };
+  if (!navigator.onLine) return { ok: false, message: "No internet connection." };
+  try {
+    const { data, error } = await studentDb.functions.invoke(functionName, { body: payload || {} });
+    if (error) return { ok: false, message: error.message || "Server request failed." };
+    return data || { ok: false, message: "Empty server response." };
+  } catch (error) {
+    return { ok: false, message: error.message || "Server request failed." };
+  }
+}
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: CONFIGURATION AND HELPERS 👈
+                     👉 START OF: NAVIGATION AND THEME 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+function showSection(sectionId) {
+  const target = $(sectionId);
+  if (!target) return;
+  $$(".section").forEach((section) => {
+    section.classList.toggle("active", section.id === sectionId);
+    section.setAttribute("aria-hidden", section.id === sectionId ? "false" : "true");
+  });
+  $$(".nav-btn").forEach((button) => {
+    const active = button.dataset.section === sectionId;
+    button.classList.toggle("active", active);
+    if (active) button.setAttribute("aria-current", "page");
+    else button.removeAttribute("aria-current");
+  });
+  if (sectionId === "settings") hydrateSettings();
+  if (sectionId === "batchaf") renderBatchesaf();
+  if (sectionId === "community") initAfNexusV2();
+  if (sectionId === "explore") loadAFTestPageV1();
+  if (sectionId === "learningHeatmap") loadLearningHeatmap();
+  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+}
+function toggleSettingsDarkMode(isEnabled) {
+  document.body.classList.toggle("dark-mode", !!isEnabled);
+  localStorage.setItem("af_theme_mode", isEnabled ? "dark" : "light");
+}
+function hydrateSettings() {
+  const student = getStudent();
+  const name = $("settingsStudentName");
+  const toggle = $("settingsDarkToggle");
+  if (name) name.textContent = "Hi, " + (isLoggedIn() ? student.name : "Student");
+  if (toggle) toggle.checked = document.body.classList.contains("dark-mode");
+}
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: NAVIGATION AND THEME 👈
+                     👉 START OF: BANNER AND SPLASH 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+let bannerIndex = 0;
+let bannerTimer = null;
+function goToBannerSlide(index) {
+  const slides = $$("#homeBanner .banner-slide");
+  const dots = $$("#homeBanner .banner-dot");
+  if (!slides.length) return;
+  bannerIndex = (index + slides.length) % slides.length;
+  slides.forEach((slide, i) => slide.classList.toggle("active", i === bannerIndex));
+  dots.forEach((dot, i) => dot.classList.toggle("active", i === bannerIndex));
+}
+function initBanner() {
+  clearInterval(bannerTimer);
+  bannerTimer = setInterval(() => goToBannerSlide(bannerIndex + 1), 3600);
+}
+function initSplash() {
+  setTimeout(() => {
+    const splash = $("splashScreen");
+    if (splash) splash.classList.add("hide");
+  }, 900);
+}
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: BANNER AND SPLASH 👈
+                     👉 START OF: STUDENT AUTH AND COURSES 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+function switchStudentModeaf(mode) {
+  const boxes = { login: $("studentLoginBoxaf"), create: $("studentCreateBoxaf"), forgot: $("studentForgotBoxaf") };
+  Object.entries(boxes).forEach(([key, el]) => el && el.classList.toggle("hidden", key !== mode));
+  $("loginTabBtnaf")?.classList.toggle("active", mode === "login");
+  $("createTabBtnaf")?.classList.toggle("active", mode === "create");
+  setMessage("studentMessageaf", "", "");
+}
+function saveStudentSessionaf(student, sessionToken, deviceId) {
+  localStorage.setItem("af_student_logged_in", "true");
+  localStorage.setItem("af_session_token", sessionToken || "");
+  localStorage.setItem("af_device_id", deviceId || getAFDeviceId());
+  localStorage.setItem("af_student_uuid", student.id || student.uuid || "");
+  localStorage.setItem("af_student_id", student.student_id || student.mobile || student.phone || "");
+  localStorage.setItem("af_student_mobile", student.mobile || student.phone || "");
+  localStorage.setItem("af_student_name", student.name || "Student");
+  localStorage.setItem("af_student_email", student.email || "");
+}
+async function loginStudentaf() {
+  const loginId = clean($("loginPhoneaf")?.value);
+  const password = clean($("loginPasswordaf")?.value);
+  if (!loginId || !password) return setMessage("studentMessageaf", "error", "Enter Student ID and password.");
+  setMessage("studentMessageaf", "info", "Checking your login...");
+  const result = await edgeCall("student-login-af", {
+    login_id: loginId,
+    clean_login_id: loginId.replace(/\D/g, ""),
+    password,
+    device_id: getAFDeviceId(),
+    device_name: getAFDeviceName()
+  });
+  if (!result.ok || !result.student) return setMessage("studentMessageaf", "error", result.message || "Login failed.");
+  saveStudentSessionaf(result.student, result.session_token || result.login_token || "", result.device_id || "");
+  openCourseSectionAfterLoginaf(result.student);
+}
+async function sendCreateOtpaf() {
+  const student = {
+    id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+    student_id: clean($("createPhoneaf")?.value).replace(/\D/g, ""),
+    mobile: clean($("createPhoneaf")?.value).replace(/\D/g, ""),
+    name: clean($("createNameaf")?.value),
+    email: clean($("createEmailaf")?.value).toLowerCase()
+  };
+  const password = clean($("createPasswordaf")?.value);
+  if (!student.name || !student.mobile || !student.email || !password) return setMessage("studentMessageaf", "error", "Fill all fields to create your ID.");
+  const result = await edgeCall("student-create-af", { ...student, password });
+  if (result.ok && result.student) {
+    saveStudentSessionaf(result.student);
+    openCourseSectionAfterLoginaf(result.student);
+    return;
+  }
+  saveStudentSessionaf(student);
+  openCourseSectionAfterLoginaf(student);
+  showToast("Demo Login", "Backend was unavailable, so a local student session was created.");
+}
+function findStudentForResetaf() {
+  const value = clean($("forgotLoginaf")?.value);
+  if (!value) return setMessage("studentMessageaf", "error", "Enter your Student ID, phone, or email.");
+  setMessage("studentMessageaf", "success", "If this account exists, reset instructions will be sent.");
+}
+function openCourseSectionAfterLoginaf(studentData) {
+  saveStudentSessionaf(studentData || getStudent());
+  $("studentAuthCardaf")?.classList.add("hidden");
+  $("noCourseBoxaf")?.classList.add("hidden");
+  $("courseSelectBox")?.classList.remove("hidden");
+  const welcome = $("studentWelcomeTextaf");
+  if (welcome) welcome.textContent = "Welcome " + getStudent().name;
+  renderStudentCourses();
+  refreshLoggedInUi();
+}
+function renderStudentCourses() {
+  const box = $("courseCardsaf");
+  if (!box) return;
+  const enrolled = JSON.parse(localStorage.getItem("af_enrolled_courses") || "[]");
+  if (!enrolled.length) {
+    $("courseSelectBox")?.classList.add("hidden");
+    $("noCourseBoxaf")?.classList.remove("hidden");
+    return;
+  }
+  box.innerHTML = enrolled.map((course) => `<div class="course-card"><h3>${escapeHtml(course.title)}</h3><p class="muted">${escapeHtml(course.subtitle || "Course access active.")}</p></div>`).join("");
+}
+function logoutStudentaf() {
+  ["af_student_logged_in", "af_session_token", "af_student_uuid", "af_student_id", "af_student_mobile", "af_student_name", "af_student_email"].forEach((key) => localStorage.removeItem(key));
+  $("studentAuthCardaf")?.classList.remove("hidden");
+  $("courseSelectBox")?.classList.add("hidden");
+  $("noCourseBoxaf")?.classList.add("hidden");
+  switchStudentModeaf("login");
+  refreshLoggedInUi();
+}
+function logoutStudentafWithMessage() {
+  logoutStudentaf();
+  showToast("Logged out", "Logged out successfully.");
+}
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: STUDENT AUTH AND COURSES 👈
+                     👉 START OF: PROFILE DASHBOARD 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+function refreshLoggedInUi() {
+  const student = getStudent();
+  const logged = isLoggedIn();
+  const cardName = $("studentDashboardCardNameAf");
+  const cardSub = $("studentDashboardCardSubAf");
+  const nexusName = $("afNexusStudentNameV2");
+  if (cardName) cardName.textContent = logged ? "Hi, " + student.name : "Hi, Student";
+  if (cardSub) cardSub.textContent = logged ? "View Profile" : "Login to view profile";
+  if (nexusName) nexusName.textContent = logged ? student.name : "Student";
+  hydrateSettings();
+}
+function openStudentDashboardCardAf(event) {
+  event?.preventDefault();
+  if (!isLoggedIn()) {
+    showToast("Login Required", "Login to fetch your dashboard.");
+    showSection("studentaf");
+    return false;
+  }
+  const student = getStudent();
+  $("afProfileAvatar").textContent = clean(student.name).charAt(0).toUpperCase() || "S";
+  $("afProfileHeroName").textContent = student.name || "Student";
+  $("afInfoName").textContent = student.name || "-";
+  $("afInfoEmail").textContent = student.email || "-";
+  $("afInfoMobile").textContent = student.mobile || "-";
+  renderProfileBatches();
+  showSection("studentDashboardAf");
+  return false;
+}
+function openStudentDashboardFromSettingsAf() {
+  openStudentDashboardCardAf();
+}
+function renderProfileBatches() {
+  const list = $("afBatchList");
+  if (!list) return;
+  const enrolled = JSON.parse(localStorage.getItem("af_enrolled_courses") || "[]");
+  list.innerHTML = enrolled.length
+    ? enrolled.map((course) => `<div class="course-card"><h4>${escapeHtml(course.title)}</h4><p class="muted">Active</p></div>`).join("")
+    : `<p class="muted">No enrolled course found.</p>`;
+}
+function toggleAfExtraSettingsV2() {
+  const body = $("afExtraSettingsBodyV2");
+  const btn = $("afExtraSettingsToggleV2");
+  const arrow = $("afExtraSettingsArrowV2");
+  if (!body) return;
+  const open = body.classList.contains("hidden");
+  body.classList.toggle("hidden", !open);
+  btn?.setAttribute("aria-expanded", open ? "true" : "false");
+  if (arrow) arrow.textContent = open ? "⌃" : "⌄";
+}
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: PROFILE DASHBOARD 👈
+                     👉 START OF: BATCH PURCHASES 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+const afBatches = [
+  { id: "video-editing", image: "Course 1.jpeg", title: "Video & Media Editing Mastery", subtitle: "Learn editing, storytelling, reels, shorts, and professional content creation.", price: 499, oldPrice: 999 },
+  { id: "graphic-design", image: "Course 2.jpeg", title: "Creative & Graphic Design Mastery", subtitle: "Design posters, thumbnails, banners, brand creatives, and visual content.", price: 499, oldPrice: 999 },
+  { id: "ai-coding", image: "Course 3.jpeg", title: "AI Coding & Logic Foundation", subtitle: "Build coding logic, AI basics, prompts, and beginner-friendly programming thinking.", price: 499, oldPrice: 999 },
+  { id: "freelancing", image: "Course 4.jpeg", title: "Freelancing & Monetization Roadmap", subtitle: "Understand digital earning, freelancing basics, client work, and skill monetization.", price: 499, oldPrice: 999 },
+  { id: "ai-prompt-engineering", image: "Course 5.jpeg", title: "AI & Prompt Engineering", subtitle: "Master AI tools, prompt structure, productivity workflows, and practical automation thinking.", price: 499, oldPrice: 999 }
+];
+function filterBatchesaf() {
+  renderBatchesaf(clean($("batchSearchInputaf")?.value).toLowerCase());
+}
+function renderBatchesaf(query = "") {
+  const box = $("batchCardsaf");
+  const count = $("batchCountTextaf");
+  if (!box) return;
+  const enrolled = JSON.parse(localStorage.getItem("af_enrolled_courses") || "[]").map((c) => c.id);
+  const list = afBatches.filter((batch) => !query || (batch.title + " " + batch.subtitle).toLowerCase().includes(query));
+  if (count) count.textContent = list.length + " batches available";
+  box.innerHTML = list.map((batch) => {
+    const isEnrolled = enrolled.includes(batch.id);
+    return `
+      <article class="batch-card">
+        <img src="${batch.image}" alt="${escapeHtml(batch.title)}" loading="lazy" />
+        <div class="batch-body">
+          <h3>${escapeHtml(batch.title)}</h3>
+          <p class="muted">${escapeHtml(batch.subtitle)}</p>
+          <div class="price-row"><strong>₹${batch.price}</strong><del>₹${batch.oldPrice}</del><span>50% OFF</span></div>
+          <button class="${isEnrolled ? "secondary-btn" : "primary-btn"}" type="button" ${isEnrolled ? "disabled" : ""} onclick="buyBatchDirectaf('${batch.id}')">${isEnrolled ? "Already Enrolled" : "Buy Now"}</button>
+        </div>
+      </article>`;
+  }).join("") || `<div class="empty-state"><p class="muted">No batch found.</p></div>`;
+}
+function buyBatchDirectaf(batchId) {
+  if (!isLoggedIn()) {
+    showToast("Login Required", "Please login before buying a batch.");
+    showSection("studentaf");
+    return;
+  }
+  const batch = afBatches.find((item) => item.id === batchId);
+  if (!batch) return;
+  const enrolled = JSON.parse(localStorage.getItem("af_enrolled_courses") || "[]");
+  if (!enrolled.some((item) => item.id === batch.id)) enrolled.push(batch);
+  localStorage.setItem("af_enrolled_courses", JSON.stringify(enrolled));
+  showToast("Enrolled", "Batch access has been added.");
+  renderBatchesaf();
+  renderStudentCourses();
+}
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: BATCH PURCHASES 👈
+                     👉 START OF: COMMUNITY 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+let afNexusFeedModeV2 = "relevant";
+function getPosts() {
+  return JSON.parse(localStorage.getItem("af_nexus_posts") || "[]");
+}
+function savePosts(posts) {
+  localStorage.setItem("af_nexus_posts", JSON.stringify(posts));
+}
+function initAfNexusV2() {
+  const logged = isLoggedIn();
+  $("afNexusLockedV2")?.classList.toggle("hidden", logged);
+  $("afNexusMainV2")?.classList.toggle("hidden", !logged);
+  $("afNexusWriteBtnV2")?.classList.toggle("hidden", !logged);
+  refreshLoggedInUi();
+  if (logged) loadAfNexusPostsV2();
+}
+function setAfNexusFeedModeV2(mode) {
+  afNexusFeedModeV2 = mode === "recent" ? "recent" : "relevant";
+  $("afNexusRelevantBtnV2")?.classList.toggle("active", afNexusFeedModeV2 === "relevant");
+  $("afNexusRecentBtnV2")?.classList.toggle("active", afNexusFeedModeV2 === "recent");
+  loadAfNexusPostsV2();
+}
+function loadAfNexusPostsV2() {
+  renderAfNexusPostsV2(getPosts(), "afNexusPostsListV2");
+}
+function renderAfNexusPostsV2(posts, targetId) {
+  const box = $(targetId);
+  if (!box) return;
+  if (!posts.length) {
+    box.innerHTML = `<div class="empty-state"><p class="muted">No posts yet.</p></div>`;
+    return;
+  }
+  const sorted = [...posts].sort((a, b) => afNexusFeedModeV2 === "recent" ? b.createdAt - a.createdAt : (b.likes || 0) - (a.likes || 0));
+  box.innerHTML = sorted.map((post) => `
+    <article class="post-card">
+      <div class="post-top">
+        <div class="post-author"><span class="avatar-sm">${escapeHtml(post.author.charAt(0).toUpperCase())}</span><div><strong>${escapeHtml(post.author)}</strong><p class="muted">${new Date(post.createdAt).toLocaleString()}</p></div></div>
+      </div>
+      <p>${escapeHtml(post.content)}</p>
+      <button class="secondary-btn" type="button" onclick="toggleAfNexusPostLikeV2('${post.id}')">Like ${post.likes || 0}</button>
+    </article>`).join("");
+}
+function openAfNexusComposerV2() {
+  $("afNexusComposerOverlayV2")?.classList.add("show");
+  $("afNexusPostInputV2").value = "";
+  handleAfNexusPostTypingV2();
+}
+function closeAfNexusComposerV2() {
+  $("afNexusComposerOverlayV2")?.classList.remove("show");
+}
+function handleAfNexusPostTypingV2() {
+  const input = $("afNexusPostInputV2");
+  const count = clean(input?.value).split(/\s+/).filter(Boolean).length;
+  $("afNexusWordCountV2").textContent = count + " / 80 words";
+  $("afNexusSubmitPostBtnV2").disabled = count === 0 || count > 80;
+  $("afNexusWordLimitWarningV2")?.classList.toggle("show", count > 80);
+}
+function createAfNexusPostV2() {
+  const input = $("afNexusPostInputV2");
+  const content = clean(input?.value);
+  if (!content) return;
+  const posts = getPosts();
+  posts.unshift({ id: String(Date.now()), author: getStudent().name, studentKey: getStudent().email || getStudent().mobile, content, likes: 0, createdAt: Date.now() });
+  savePosts(posts);
+  closeAfNexusComposerV2();
+  loadAfNexusPostsV2();
+}
+function toggleAfNexusPostLikeV2(postId) {
+  const posts = getPosts().map((post) => post.id === String(postId) ? { ...post, likes: (post.likes || 0) + 1 } : post);
+  savePosts(posts);
+  loadAfNexusPostsV2();
+}
+function openAfMyNexusV2() {
+  $("afNexusFeedViewV2")?.classList.add("hidden");
+  $("afMyNexusViewV2")?.classList.remove("hidden");
+  const key = getStudent().email || getStudent().mobile;
+  renderAfNexusPostsV2(getPosts().filter((post) => post.studentKey === key), "afMyNexusPostsListV2");
+}
+function closeAfMyNexusV2() {
+  $("afMyNexusViewV2")?.classList.add("hidden");
+  $("afNexusFeedViewV2")?.classList.remove("hidden");
+}
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: COMMUNITY 👈
+                     👉 START OF: TEST ARENA 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+function refreshAfTestLockV1() {
+  const logged = isLoggedIn();
+  $("afTestLockedV1")?.classList.toggle("hidden", logged);
+  $("afTestMainV1")?.classList.toggle("hidden", !logged);
+}
+function renderAFTestDashboardV1() {
+  const cards = $("afTestDashboardCardsV1");
+  if (!cards) return;
+  cards.innerHTML = `
+    <div class="mini-stat"><span>Last Rank</span><strong>--</strong></div>
+    <div class="mini-stat"><span>Overall Rank</span><strong>--</strong></div>
+    <div class="mini-stat"><span>Avg Time / Q</span><strong>--</strong></div>`;
+}
+function loadAFTestPageV1() {
+  refreshAfTestLockV1();
+  renderAFTestDashboardV1();
+  const area = $("afTestAreaV1");
+  if (!area || !isLoggedIn()) return;
+  area.innerHTML = `<h3>No tests scheduled</h3><p class="muted">Check back later for upcoming tests.</p>`;
+}
+function openAFTestDashboardPageV1() {
+  $("afTestDashboardPageV1")?.classList.remove("hidden");
+  $("afTestRankingPageV1")?.classList.add("hidden");
+  $("afTestDashboardPageV1").innerHTML = `<h3>Your Test Rankings</h3><p class="muted">No test ranking yet.</p>`;
+}
+function openAFTestRankingPageV1() {
+  $("afTestRankingPageV1")?.classList.remove("hidden");
+  $("afTestDashboardPageV1")?.classList.add("hidden");
+  $("afTestRankingPageV1").innerHTML = `<h3>Top 10 Students</h3><p class="muted">Top 10 will show after students attempt test.</p>`;
+}
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: TEST ARENA 👈
+                     👉 START OF: FORMS AND REQUEST STATUS 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+function openBugReportModal() {
+  $("bugReportForm")?.reset();
+  setMessage("bugReportStatus", "", "");
+  $("bugReportOverlay")?.classList.add("show");
+}
+function closeBugReportModal() {
+  $("bugReportOverlay")?.classList.remove("show");
+}
+async function submitBugReport(event) {
+  event.preventDefault();
+  setMessage("bugReportStatus", "success", "Bug report submitted successfully.");
+  setTimeout(closeBugReportModal, 900);
+}
+function openContactUsPage() {
+  showSection("contactUsAf");
+}
+async function submitContactRequestAf(event) {
+  event.preventDefault();
+  setMessage("contactUsMessageAf", "success", "Your request has been submitted successfully. Our team will contact you soon.");
+  $("contactUsFormAf")?.reset();
+}
+function openAfDeleteAccountRequestV2() {
+  const student = getStudent();
+  $("afDeleteFullNameV2").value = student.name !== "Student" ? student.name : "";
+  $("afDeleteEmailV2").value = student.email;
+  $("afDeletePhoneV2").value = student.mobile;
+  setMessage("afDeleteMessageV2", "", "");
+  $("afDeleteAccountModalV2")?.classList.add("show");
+}
+function closeAfDeleteAccountRequestV2() {
+  $("afDeleteAccountModalV2")?.classList.remove("show");
+}
+async function submitAfDeleteAccountRequestV2(event) {
+  event.preventDefault();
+  setMessage("afDeleteMessageV2", "success", "Your account deletion request has been submitted successfully.");
+  $("afDeleteAccountFormV2")?.reset();
+  setTimeout(closeAfDeleteAccountRequestV2, 1200);
+}
+function openRequestStatusPageAf() {
+  showSection("requestStatusAf");
+  loadRequestStatusAf(false);
+}
+function loadRequestStatusAf() {
+  const box = $("requestStatusListAf");
+  setMessage("requestStatusMessageAf", "empty", isLoggedIn() ? "No request found. Your bug reports will appear here after submission." : "Login first to view your request status.");
+  if (box) box.innerHTML = "";
+}
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: FORMS AND REQUEST STATUS 👈
+                     👉 START OF: LEARNING HEATMAP AND DEVICE HELPERS 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+function loadLearningHeatmap() {
+  const today = new Date().getDay();
+  const mondayBased = today === 0 ? 6 : today - 1;
+  const streak = Number(localStorage.getItem("af_learning_streak") || (isLoggedIn() ? 1 : 0));
+  localStorage.setItem("af_learning_streak", String(streak));
+  $("afHeaderStreakCount").textContent = String(streak);
+  $("learningHeatmapStreakCount").textContent = String(streak);
+  $("learningHeatmapStatus").textContent = isLoggedIn() ? `Current streak: ${streak} day(s).` : "Login to start your streak.";
+  const grid = $("learningWeekGrid");
+  if (!grid) return;
+  const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  grid.innerHTML = labels.map((label, index) => `<div class="day-box ${index <= mondayBased && isLoggedIn() ? "active" : ""} ${index === mondayBased ? "today" : ""}"><span>${label}</span><strong>${index <= mondayBased && isLoggedIn() ? "✓" : "-"}</strong></div>`).join("");
+}
+function getAFDeviceId() {
+  let id = localStorage.getItem("af_device_id");
+  if (!id) {
+    id = "device_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+    localStorage.setItem("af_device_id", id);
+  }
+  return id;
+}
+function getAFDeviceName() {
+  const ua = navigator.userAgent || "";
+  if (/android/i.test(ua)) return "Android Phone";
+  if (/iphone/i.test(ua)) return "iPhone";
+  if (/ipad/i.test(ua)) return "iPad";
+  if (/windows/i.test(ua)) return "Windows Device";
+  if (/mac/i.test(ua)) return "Mac Device";
+  return "Unknown Device";
+}
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: LEARNING HEATMAP AND DEVICE HELPERS 👈
+                     👉 START OF: APP INITIALIZATION 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+document.addEventListener("DOMContentLoaded", () => {
+  if (localStorage.getItem("af_theme_mode") === "dark") document.body.classList.add("dark-mode");
+  initSplash();
+  initBanner();
+  refreshLoggedInUi();
+  renderBatchesaf();
+  loadLearningHeatmap();
+  if (isLoggedIn()) {
+    $("studentAuthCardaf")?.classList.add("hidden");
+    $("courseSelectBox")?.classList.remove("hidden");
+    renderStudentCourses();
+  }
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  closeBugReportModal();
+  closeAfDeleteAccountRequestV2();
+  closeAfNexusComposerV2();
+});
+/*
+================================================================================
+████████████████████████████████████████████████████████████████████████████████
+                  👉 END OF SECTION: APP INITIALIZATION 👈
+████████████████████████████████████████████████████████████████████████████████
+================================================================================
+*/
+</script>
+</body>
+</html>
